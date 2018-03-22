@@ -1,0 +1,5 @@
+首先确保自己安装了nodejs，然后全局安装yeoman
+npm install -g yo
+
+然后直接安装脚手架
+npm install -g generator-reactpackage

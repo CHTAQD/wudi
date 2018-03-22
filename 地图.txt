@@ -1,0 +1,11 @@
+npm install vue-baidu-map -S
+
+然后在main.js文件下 进行缓存  使用AK
+
+Vue.use(BaidiMap,{
+  ak:'YZXB6Mdbfj2HSBOgf1Xp8U9WYejiWV75'
+})
+
+最后可以在页面调用了
+ 
+

@@ -1,0 +1,682 @@
+React最初来自Facebook内部的广告系统项目，项目实施过程中前端开发遇到了巨大挑战，代码变得越来越臃肿且混乱不堪，难以维护。他们又对市场的现有的前端mvc框架都不满意。于是他们决定抛开很多所谓的“最佳实践”，重新思考前端界面的构建方式，，就决定自己写一套框架来解决这些问题，然后就有了React
+
+后来发现React框架在开发中很好用，于是FB投入了更多的人力去开发这套框架，最后在2013年5月宣布开源
+
+由于 React 的设计思想极其独特，属于革命性创新，性能出众，代码逻辑却非常简单。所以，越来越多的人开始关注和使用，认为它可能引领未来用户界面开发的主流框架
+
+React 这么火，那么它到底有什么牛逼的地方？
+极速的渲染性能
+组件互相独立，关系隔离，可复用
+跨平台
+Facebook帮我们做了充分的测试
+
+react项目本身也越滚越大，从最早的UI引擎变成了一整套前后端通吃的 Web App 解决方案。衍生的 React Native 项目，目标更是宏伟，希望用写 Web App 的方式去写 Native App。如果能够实现，整个互联网行业都会被颠覆，开发者只需要写一套程序，就能同时运行在服务器、浏览器和手机
+
+特点和优势:
+1.虚拟dom (开发时候不需要在页面中写任何dom元素)
+
+2.jsx语法(写页面时候使用javascript xml格式的语法)
+
+3.组件化开发(react最核心的思想是将页面中任何一个区域或者元素都
+看成是一个组件 Component)
+
+4.单向数据流(组件和后端之间的数据是单向的，从后端流动到react组件中)
+
+5.组件生命周期(任何一个组件在dom中都具有一个完整的生命周期，组件初始化的时候开始，组件被移除的时候消失，从而保证性能的优越) 
+
+传统 web app 和 DOM 直接交互，由App来控制DOM的构建和渲染、元素属性的读写、事件等等。 当新产品刚上线的时候，这种做法看起来也挺好。但随着产品功能越来越丰富、代码量越来越多、开发团队人员越来越多 —————杂乱
+
+虚拟DOM
+虚拟DOM则是在DOM的基础上建立了一个抽象层，我们对数据和状态所做的任何改动，都会被自动且高效的同步到虚拟DOM，最后再批量同步到DOM中。
+虚拟DOM会使得App只关心数据和组件的执行结果，中间产生的DOM操作不需要App干预，而且通过虚拟DOM来生成DOM，会有一项非常可观收益——-性能。
+
+React会在内存中维护一个虚拟DOM树，当我们对这个树进行读或写的时候，实际上是对虚拟DOM进行的。当数据变化时，然后React会自动更新虚拟DOM，然后拿新的虚拟DOM和旧的虚拟DOM进行对比，找到有变更的部分，得出一个Patch，然后将这个Patch放到一个队列里，最终批量更新这些Patch到DOM中。
+
+缺陷——首次渲染大量DOM时因为多了一层虚拟DOM的计算，会比innerHTML插入方式慢，所以使用时尽量不要一次性渲染大量DOM。
+
+JSX 允许 xHTML 与 JavaScript 的混写
+其实JSX是可选的，咱们浏览器最终识别的还是js的代码，JSX最终会编译成JavaScript 代码。
+
+ReactDOM.render( 
+	<h1>Hello, world!</h1>,
+ 	document.getElementById(‘main’) 
+);
+上面代码将一个 h1 标题，插入  main  节点
+
+
+React.createElement(<h1>Hello, world!</h1>),
+document.getElementById(‘main’) )
+
+
+ReactDOM.render() 方法里的被编译成了 React.createElement()，
+这里是在React内部创建了一个元素，而不是document.createElement()
+它这么做，目的就是为了在react里面实现虚拟 DOM，
+
+ReactDOM.render( 
+<div> 
+{
+ names.map(function (name) { 
+	return <div>Hello, {name}!</div> 
+}) 
+} 
+</div>, document.getElementById('example') 
+);
+
+JSX 的基本语法规则：遇到 HTML 标签（以 < 开头），
+就用 HTML 规则解析；遇到代码块（以 { 开头），就用 JavaScript 规则解析。
+
+组件
+
+每个组件 能完成独立的功能的，都是独立的部分
+组件（Component）组件即将一段或几段完成各自功
+能的代码段封装为一个或几个独立的部分。
+
+var HelloMessage = React.createClass(
+    { 
+		render: function() { 
+			return <h1>Hello word</h1>; 
+	 }  
+}
+);
+//使用组件
+ReactDOM.render（< HelloMessage > < / HelloMessage>，document.body );
+
+组件的名字首字母必须大写HelloMessage，通过React.createClass创建组件，
+render方法内部是组件要渲染的内容
+
+var Content = React.createClass(
+{ 
+render: function() { 
+	return <p>哈哈哈哈，啊哈哈</p>; 
+}
+);
+//使用组件ReactDOM.render( < Content > </ Content>, document.body );
+但单个的组件肯定不能满足实际需求，我们需要做的是将这些独立的组件进行组装，同时找出共性的部分进行复用。
+
+
+组件的复合
+var SectionInfo = React.createClass(
+{ 
+render: function() { 
+	return (
+		<div>
+		   < HelloMessage ></HelloMessage>
+		      < Content > </ Content>
+		</div>
+		)
+	}
+
+});
+
+
+数据流
+props（properties 特性）是在调用时候被调用者设置的，只设置一次，一般没有额外变化
+可以把任意类型的数据传递给组件，尽可能的吧props当做数据源，不要在组件内部设置props ，0.15.x已经废弃了setProps的方法。
+
+1、this.props.children  
+2、this.props.xxx
+state（状态）是在组件内部可以重复设置其值，是可以随意改变的
+
+state用来确定组件的状态，不同状态可以展示不同的视图（控制下拉菜单的隐藏显示） getInitialState()设置初始的状态
+可以通过setState方法来设置state //this.setState(obj|function(state){})
+
+一旦props或者state发生改变，组件都会重新渲染
+
+事件
+React处理的事件本质上和原生的JavaScript事件一样，MouseEvents事件用于点击处理器，Change事件用于表单元素变化
+var Counter = React.createClass({
+    handleClick: function () {
+    	alert(1)
+    },
+    render: function () {
+        return (<h2 onClick={this.handleClick}>Click me</h2>);
+    }
+});
+用户点击这个按钮时，组件的handleClick方法会被调用
+
+
+React的版本及使用
+常见版本：
+
+0.13.x  历史版本，现在使用率比较少，通过JSXTransformer.js 编译jsx
+
+0.14.x  主要更新 
+
+1、React 「一分为二」
+React.createClass方法在react.js里面；ReactDOM.render()在react-dom.js里面
+原本在服务端渲染用的两个 API .renderToString 和 .renderToStaticMarkup 被放在了react-dom/server 中。
+2、 refs 变成了真正的 DOM 节点
+3、放弃JSXTransformer.js，通过Babel 实现es6和jsx的编译（browser.js）
+ 	
+0.15.x 最新版本
+  废弃this.getDOMNode()， setProps 等一些鸡肋的方法，es6的相关变更
+
+
+react的编译
+通过js文件编译
+JSXTransformer.js:   jsx 编译
+
+browser.js :    es6, jsx 编译 （推荐使用）
+
+操作简单，需要在浏览器内编译不利于上线的项目
+
+通过其他工具编译
+
+Gulp      http://blog.shiqichan.com/Gulp-transform-JSX
+
+Webpack   必须使用
+…..
+具编译、打包、模块化、于一体，搭建环境相对复杂
+
+组件的生命周期
+
+随着该组件的props（数据）或者state（状态）发生改变，它的DOM表现也将有相应的变化，一个组件就是一个状态机：对于特定的输入，它总会返回一致的输出。 React为每个组件提供了生命周期钩子函数去响应不同的时刻，组件的生命周期分为三个部分：（1）实例化；（2）存在期；（3）销毁&清理期。
+
+钩子函数 :
+钩子函数类似有回调函数（callback），但他是在方法内容一开始调用的，而callback是在事件结束调用的 
+var fn=function(hook,callback){
+   hook()
+   alert(1)
+   callback()
+}
+fn(function(){alert(“钩子”)},function(){alert(“callback”)})估且可以认为钩子函数就callback，或特殊的callback
+
+具体的钩子函数：
+实例化(调用组件)
+    getDefaultProps  (设置默认的props)
+    getInitialState  (设置默认的state)
+    componentWillMount (组件第一次即将调用render)
+    render  (渲染DOM)
+    componentDidMount (render完成，在这里可以获取到真实的dom)
+
+存在期(或调用setState)
+    componentWillReceiveProps(当组件接收到新得props)
+    shouldComponentUpdate(判断是否需要重新渲染)
+    componentWillUpdate(组件重新渲染)即将调用render
+    componentDidUpdate(组件重新渲染完成)
+
+销毁期
+	 componentWillUnmount
+
+实例化阶段
+
+在组件调用之前的——创建阶段
+getDefaultProps方法发生在创建组件类的时候，即调用React.createClass的时候。这个阶段只会触发一个getDefaultProps方法，给this.props作为该组件的默认属性
+props属性是一个对象，是组件用来接收外面传来的参数的组件内部是不允许修改自己的props属性的，只能通过父组件来修改。在getDefaultProps方法中，是可以设定props默认值的。
+getDefaultProps:function() {
+	return {a:1};
+}
+
+
+实例化阶段
+
+getInitialState 初始化组件的state的值，其返回值会赋值给组件的this.state属性。对于组件的每个实例来说，这个方法的调用次数有且只有一次。
+getInitialState:function() {
+	return {
+       num:1
+    };
+}
+componentWillMount 此方法会在完成首次渲染之前被调用。这也是在render方法调用前可以修改组件state的最后一次机会。
+
+render 生成页面需要的虚拟DOM结构，用来表示组件的输出。render方法需要满足：（1）只能通过this.props和this.state访问数据；（2）可以返回null、false或者任何React组件；（3）只能出现一个顶级组件；（4）必需纯净，意味着不能改变组件的状态或者修改DOM的输出
+
+componentDidMount 该方法发生在render方法成功调用并且真实的DOM已经被渲染之后，在该函数内部可以通过DOM操作来获取当前组件的节点。然后就可以像Web开发中的那样操作里面的DOM元素了。
+
+比如用jq选择器选取某个元素
+
+存在期
+
+用户改如果变了组件的state，或者要展示的数据发生改变，这时候需要重新渲染组件
+
+componentWillReceiveProps 在任意时刻，组件的props都可以通过父辈组件来更改。当组件接收到新的props(这里不同于state）时，会触发该函数，我们同时也获得更改props对象及更新state的机会。
+shouldComponentUpdate 该方法用来拦截新的props和state，然后开发者可以根据自己设定逻辑，做出要不要更新render的决定，让它更快（当props 发生改变，或者调用了setState方法，调用了setState 方法哪怕state没有改变也会触发）
+componentWillUpdate 与componentWillMount方法类似，组件上会接收到新的props或者state渲染之前，调用该方法。但是不可以在该方法中更新state和props。
+render 生成页面需要的虚拟DOM结构，并返回该结构
+componentDidUpdate 与componentDidMount类似，更新已经渲染好的DOM。
+
+总结
+1、样式设置style={{color：“red”}}
+
+2、逻辑判断语句 ：? :
+
+3、循环嵌套，this的传递（包括传参）
+
+4、最好为数组中的元素提供唯一的 key 属性
+
+5、通过this.refs获取设置了ref属性的真实DOM节点(componentDIdMount)
+
+6、通过改变组件的状态，来改变组件的形态，不要去改变组件的props
+
+7、设置state，this.setState({ stateName:stateVal })
+
+
+表单元素交换规则
+1、value，用于 <input>、<textarea>、<select>组件。
+在 HTML 中，
+<textarea> 的值通过子节点设置；在 React 中则应该使用 value 代替
+
+2、checked，用于类型为 checkbox 或者 radio 的 <input> 组件。
+
+3、selected，用于 <option> 组件。
+
+通过 onChange 回调函数来监听组件变化。当用户做出以下交互时，onChange 执行并通过浏览器做出响应：
+
+<input> 或 <textarea> 的 value 发生变化时。
+<input> 的 checked 状态改变时。
+<option> 的 selected 状态改变时。
+
+受限组件
+render: function() { return <input type="text" value="Hello!" />; }
+不受限组件
+render: function() { return <input type="text“/>; }
+
+默认属性支持
+defaultChecked 
+defaultValue 
+render: function() { return(
+  <div>
+     <input type=" checkbox “ defaultChecked={true} /  >; 
+     <input type=“text““ defaultValue =“sval”  / >; 
+  </div>
+)}
+Select选中的下标:selectedIndex
+通过 event.target获取目标元素event.target.vaule是目标元素的value值
+中文：[\u4e00-\u9fa5]
+
+
+props（properties 特性）是在调用时候被调用者设置的，只设置一次，一般没有额外变化,在组件内部把props当做只读的
+
+可以把任意类型的数据传递给组件，尽可能的吧props当做数据源，不要在组件内部设置props ，0.15.x已经废弃了setProps的方法。
+
+组件的属性类型如果不进行声明和验证，那么很可能使用者传给你的属性值或者类型是无效的，那会导致一些意料之外的故障。好在React已经为我们提供了一套非常简单好用的属性校验机制——
+
+React有一个PropTypes属性校验工具，经过简单的配置即可。当使用者传入的参数不满足校验规则时，React会给出非常详细的警告
+
+需要引入react-with-addons.js
+
+PropTypes包含的校验类型包括基本类型、数组、对象、实例、枚举。
+如果某个属性是必须的，在类型后面加上 .isRequired 即可。
+
+var Test = React.createClass({
+    propTypes: {
+      num: React.PropTypes.array,
+      str: React.PropTypes.string.isRequired
+    },
+    render:function(){
+      return <div>{this.props.bool}asdasd{this.props.string}</div>
+    }
+});
+ReactDOM.render( <Test num =“1"/>, document.body);
+作用：使用组件的时候可以明确需要传入的数据
+
+
+注意事项：
+1、不要在组件内部修改props
+
+2、不要在render和componentDidUpdate的函数里面尝试改变组件的状态state
+
+3、可以在componentWillReceiveProps的时候获取一次修改状态的机会
+componentWillReceiveProps:function(nextProps) {
+   console.log(nextProps);
+      console.log("componentWillReceiveProps");
+      },
+4、 state表示组件自身的状态，可由组件内部控制
+比如：一个购物车的component，会根据用户在购物车中添加的产品和产品数量，显示不同的价格，那么“总价”这个状态，就应该用state表示
+5、props一般是数据源，由外部所决定
+例如：一个下拉菜单的component，有哪些菜单项，是由这个component的使用者和使用场景决定的。
+
+
+组件之间的特殊通信
+
+在 React 中，UI 以组件的形式来搭建，组件之间可以嵌套组合。另，React 中组件间通信的数据流是单向的，顶层组件可以通过 props 属性向下层组件传递数据，而下层组件不能向上层组件传递数据，兄弟组件之间同样不能。这样简单的单向数据流支撑起了 React 中的数据可控性。
+
+然而在我们的开发中会有一些特殊的需求，需要子组件控制父组件的状态，或者无关系组件之间的通信。那么，更全面的组件间通信形式该怎么实现呢？
+
+1、数据逆向，兄弟组件
+
+嵌套组件间，上层组件向下层组件传递回调函数，下层组件触发回调来更新上层组件的状态或数据。
+
+通过控制上层组件状态，来改变后兄弟组件状态或数据
+
+2、无关系组件
+
+以事件的形式，使用发布订阅的方式来通知数据更新。
+
+
+react官网
+https://facebook.github.io/react/docs/installation.html#trying-out-react
+脚手架
+npm install -g create-react-app
+
+创建工程
+create-react-app 工程名
+
+启动项目
+npm start
+
+1、创建组件
+   class App extends React.Commponent{
+      constructor (){
+        super()//继承父类的构造器
+        this.state={
+
+        }// 设置初始的状态
+      }
+   }
+2、循环嵌套  key
+3、React事件的名称首字母都要大写
+4、事件都要修正指针  
+   1>onClick={this.getIndex.bind(this)}
+   2>在构造器中写：this.getIndex=this.getIndex.bind(this);
+5、传参推荐使用箭头函数：
+  onClick={()=>this.getIndex(index)}  这句话帮助我们解决了参数传递的问题。
+
+  通信：
+  父组件传递数据给子组件  props
+  子组件通过接受父组件props传过来的事件的回调函数来改变父组件的状态
+
+6、设置状态的时候注意返回值是什么
+   this.setState({
+     list:this.state.list.push(1)  ×原因在于push返回值是长度
+   })
+
+   
+react动画
+1.引入组件
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; 
+2.在需要做动画的元素外层包裹ReactCSSTransitionGroup标签
+        <ReactCSSTransitionGroup
+          transitionName="example"
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={300}>
+          {items}
+        </ReactCSSTransitionGroup>
+3. 自己来写css。
+进入动画
+.example-enter
+.example-enter-active
+离开动画
+.example-leave
+.example-leave-active
+
+动画对于单元素是完美的。
+对于列表是有瑕疵的，动画只针对最后一个元素生效。
+
+
+路由
+单页面应用SPA
+react-router-dom
+
+https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/guides/quick-start.md
+
+什么是路由？
+    路由是根据不同的 url 地址展示不同的内容或页面。
+
+React Router 
+    一个针对React而设计的路由解决方案、可以友好的帮你解决React components 到URl之间的同步映射关系。
+
+npm install --save react-router-dom
+
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom'
+
+<Router>
+  <Link/>
+  <Route exact path='' component={} />
+</Router>
+//定义无状态组件
+const Home = (props) => (
+  <div>
+    <h2>{props.title}</h2>
+  </div>
+) 静态页面的组件
+<Home title='aaa'>
+
+
+es6总结
+ECMAScript 6.0（以下简称ES6）是JavaScript语言的下一代标准，已经在2015年6月正式发布了。它的目标，是使得JavaScript语言可以用来编写复杂的大型应用程序，成为企业级开发语言。
+
+ES6的第一个版本，就这样在2015年6月发布了，正式名称就是《ECMAScript 2015标准》
+
+let const
+let和const 只在声明所在的块级作用域内有效，而且不存在声明提前
+const 声明一个只读的常量。一旦声明，常量的值就不能改变
+
+var arr = [];
+const value = 20;
+
+for(let i=0;i<5;i++){
+  arr[i]= () => alert(i)
+}
+arr[4]() 
+value = 30 //报错，不能改
+
+
+解析赋值
+数组的解析赋值
+var a = 1;
+var b = 2; 
+var c = 3;
+
+var [a, b, c] = [1, 2, 3];   //es6
+
+let [head, ...tail] = [1, 2, 3, 4]; 
+head // 1
+tail // [2, 3, 4] 
+…tail //2 3 4
+
+function fn1(...a) {
+    console.log(a)
+}
+fn1(...tail);
+对象的解析赋值
+const obj = {
+  value1:1
+  value2:2
+  value3:3
+}
+
+const { value1,value2 } = {
+  value1:1
+  value2:2
+  value3:3
+}
+
+value1 //1
+value2 //2
+          {this.change(idnex)}
+onClick={()=>{this.change()}}
+箭头函数=>
+let fn1=(a,b)=>{
+    return a+b
+    };
+let fn1=fucntion(a,b){
+    return a+b
+}
+let fn1=(a,b)=>a+b;  //如果返回值只有一条语句可以省去{}和return
+console.log(fn1(1,2))
+
+let obj = {
+    a:1,
+    b:function () {
+      return ()=>{
+        console.log(this)
+      };
+    }
+};
+ obj.b()(); //obj
+//箭头函数不会影响this的作用域
+
+不定参和默认参
+不定参（和解析赋值的原理相同）
+
+function fn1（a, …arg）{
+//表示第一个参数是a，从第二个参数开始，都会放在arg这个数组里面，如果没有第二个参数arg为空数组
+}
+
+默认参（参数的默认值）
+
+function fn2（a=“lining”,b=“lina”）{
+  
+}
+Fn2(“小明”)
+
+ES6提供了更接近传统语言的写法，引入了Class（类）这个概念，作为对象的模板。通过class关键字，可以定义类。
+
+//定义类
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+  showName() {
+    alert(this.name)
+  }
+}
+
+Extends 继承
+
+class Student extends Person{、
+ constructor(name, age, skill) {
+    super(name, age); // 调用父类的constructor(x, y)*****
+    this. skill = skill;
+  }
+ }
+
+
+通过不定参传递
+constructor(...args) {
+  super(...args);
+}
+在子类的构造函数中，只有调用super之后，才可以使用this关键字，否则会报错。这是因为子类实例的构建，是基于对父类实例加工，只有super方法才能返回父类实例。
+
+
+Module
+块功能主要由两个命令构成：export和import。export命令用于规定模块的对外接口，import命令用于输入其他模块提供的功能。
+export  可以设置多个对外接口
+export var firstName = 'Michael';
+export var lastName = 'Jackson';
+export var year = 1958;
+或者
+var firstName = 'Michael';
+var lastName = 'Jackson';
+var year = 1958;
+
+export {firstName, lastName, year};
+加载的方法：    （加载模块的时候，模块名必须和对外接口的一致）******
+// main.js
+import {firstName} from './profile'; 
+import React,{component} from 'react';
+ 也可以只加载一个
+import { lastName} from './ m1';
+
+as 改名
+import { lastName as surname } from ‘./m1';
+
+export default命令，为模块指定默认输出(只能设置一个)。
+
+定义对外接口
+export default function () {
+  console.log('foo');
+}
+
+加载：
+import customName from ‘./export-default’;
+（不需要知道接口的名称）
+customName(); // 'foo'
+
+样式的导入
+
+Import  “../sass/index.scss”
+
+图片的导入
+Import oImg from “../img/1.png”    
+
+
+
+redux
+cn.redux.js.org/index.html
+Redux.createStore =>store 可以创建store
+Dispatch   派发，发出
+Subscribe   订阅
+getState  获取state
+Action  事件行为 
+Reducer 处理action，返回新的state
+
+1、下载：npm install redux --save-dev
+2、引入:import {createStore,combineReducers} from 'redux';
+3、生成store const store=createStore(reducer,state初始状态[可选]);
+4、取得当前时刻的state 
+   const state=store.getState();
+5、发出action
+   store.dispatch({
+   type:'ADD_TODO',
+   payload:''
+   })
+6、监听函数
+   store.subscribe(callback)
+
+Store
+Store 就是保存数据的地方，你可以把它看成一个容器。整个应用只能有一个 Store。
+1、创建Store 
+Redux 提供createStore这个函数，用来生成 Store
+import { createStore } from 'redux';
+const store = createStore(fn);
+createStore函数接受另一个函数作为参数（reducer），返回新生成的 Store 对象
+2、通过store获取state     
+store.getState();
+
+Action 表示要修改state的行为
+定义Action
+const action = {
+  type: 'ADD_ITEM',
+  info: 'Learn Redux'
+};
+type是必须有的，表示要Action的类型
+Info  不是必须的，表示要修改的信息
+
+Action Creator （Action 制造者）
+动态的生成Action 
+function addItem (text) {
+  return {
+    type: ‘ADD_ITEM’,
+    text
+  }
+}
+const action = addItem('Learn Redux');
+
+dispatch （发出，派发）
+store.dispatch()是 触发 Action（修改state的行为） 的唯一方法
+1、直接触发Active
+store.dispatch({
+  type: 'ADD_TODO',
+  payload: 'Learn Redux'
+});
+2、触发 Action creator生成的Action
+store.dispatch(addItem('Learn Redux'));
+
+Reducer  
+Reducer 函数最重要的特征是，它是一个纯函数。也就是说，只要是同样的输入，必定得到同样的输出。
+纯函数是函数式编程的概念，必须遵守以下一些约束。
+不得改写参数
+不能调用系统 I/O 的API
+不能调用Date.now()或者Math.random()等不纯的方法，因为每次会得到不一样的结果
+  
+Reducer 函数最重要的特征是，它是一个纯函数。也就是说，只要是同样的输入，必定得到同样的输出。
+纯函数是函数式编程的概念，必须遵守以下一些约束。
+不得改写参数
+不能调用系统 I/O 的API
+不能调用Date.now()或者Math.random()等不纯的方法，因为每次会得到不一样的结果
+
+store.subscribe()  
+Store 允许使用store.subscribe方法设置监听函数，一旦 State 发生变化，就自动执行这个函数（相当于订阅）。
+//当stroe里面的state发生改变的时就会触发订阅方法，
+然后获取最新的state设置个当前组件
+store.subscribe(()=>{
+  this.setState({listData:store.getState().listData});
+});
+//store.getState()方法可以获取到当前最新的state
+
